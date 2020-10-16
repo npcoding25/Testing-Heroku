@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+	<title>Hot Restaurant</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css" integrity="sha384-DhY6onE6f3zzKbjUPRc2hOzGAdEf4/Dz+WJwBvEYL/lkkIsI3ihufq9hk9K4lVoK" crossorigin="anonymous">
+	<link rel="stylesheet" href="assets/style.css">
+	<!-- include this if you need jQuery -->
+	<!-- <script src="https://code.jquery.com/jquery.js"></script> -->
+</head>
+
+<body>
+  <div class="container">
+		<div class="card bg-light p-5 mt-5 mb-5">
+			<div class="card-body text-center">
+				  <div class='card-background'><img src='assets/background-fire.jpg' /></div>
+			  	<h1 class="card-title"><h1><i class="fas fa-fire-alt"></i> Hot Restaurant</h1>
+			  	<h3 class="card-subtitle mb-2 text-muted">Book Your Tables Before They're Gone</h3>
+			  	<!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
+			  	<hr />
+			  	<a href="/listings.html" class="btn btn-primary btn-lg"><i class="far fa-list-alt"></i> View Tables</a>
+          <a href="/" class="btn btn-secondary btn-lg"><i class="fas fa-home"></i></a>
+			</div>
+    </div>           
+  
+    <div class="card m-3 mb-5">
+      <div class="card-header">
+        Table Reservations
+      </div>
+      <div class="card-body p-3">
+        <div class="mb-3">
+          <label for="name" class="form-label">Name</label>
+          <input type="text" class="form-control" id="name" placeholder="John Smith">
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input type="email" class="form-control" id="email" placeholder="name@example.com">
+        </div>
+        <div class="mb-3">
+          <label for="phone" class="form-label">Phone</label>
+          <input type="text" class="form-control" id="phone" placeholder="999-999-9999">
+        </div>
+        <div class="mb-3">
+          <label for="uniqueId" class="form-label">Unique ID</label>
+          <input type="text" class="form-control" id="uniqueId" placeholder="45QV">
+        </div>
+      </div>
+      <div class="card-footer">
+        <div id='tableMessage' class='d-none'></div>
+        <button onClick="tableReserve(event)" type="button" class="btn btn-primary">Reserve</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    // this is a function to wrap the POST complexity
+    // note you must AWAIT this response.
+    // alternatively use jQuery $.post()
+    function postUrl( url, data={} ){
+        // post requires header, method + data to be sent
+        const postData = { 
+            headers: { 'Content-Type': 'application/json' },
+            method: 'post',
+            body: JSON.stringify( data )
+        }
+        return fetch( url,postData ).then( res=>res.json() )
+    }
+
+    async function tableReserve( event ){
+        event.preventDefault()
+
+        const tableData = {
+            name: document.querySelector('#name').value,
+            phone: document.querySelector('#phone').value,
+            email: document.querySelector('#email').value,
+            uniqueId: document.querySelector('#uniqueId').value,
+        }
+        // clear table
+        document.querySelector('#name').value = ''
+        document.querySelector('#phone').value = ''
+        document.querySelector('#email').value = ''
+        document.querySelector('#uniqueId').value = ''
+
+        const result = await postUrl( '/api/tables/reserve', tableData )
+        // once reservation result comes back display it
+        alert( result.message )
+    }   
+  </script>
+</body>
+</html>
